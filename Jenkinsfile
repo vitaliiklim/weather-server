@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/your-username/weather-server.git'
+                git 'git@github.com:vitaliiklim/weather-server.git'
             }
         }
 
