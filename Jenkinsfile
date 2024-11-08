@@ -11,13 +11,17 @@ pipeline {
                 // Створення віртуального середовища
                 sh 'python3 -m venv venv'
                 
+                // Переконатися, що pip у віртуальному середовищі оновлено
+                sh './venv/bin/pip install --upgrade pip'
+                
                 // Активація середовища та встановлення залежностей
-                sh '. venv/bin/activate && pip install -r requirements.txt'
+                sh './venv/bin/pip install -r requirements.txt'
             }
         }
         stage('Run Tests') {
             steps {
-                sh '. venv/bin/activate && python -m unittest discover tests'
+                // Запуск тестів у віртуальному середовищі
+                sh './venv/bin/python -m unittest discover tests'
             }
         }
     }
