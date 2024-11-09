@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/your-username/weather-server.git'
+                git 'https://github.com/vitaliiklim/weather-server.git'
             }
         }
         stage('Setup Virtual Environment') {
@@ -22,8 +22,11 @@ pipeline {
         }
         stage('Run Tests') {
             steps {
-                sh '. venv/bin/activate'
-                sh 'PYTHONPATH=. pytest --disable-warnings'
+                sh '''
+                . venv/bin/activate
+                export PYTHONPATH=$(pwd)
+                pytest --disable-warnings
+                '''
             }
         }
     }
