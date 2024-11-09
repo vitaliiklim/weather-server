@@ -29,7 +29,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh '''
-                    . venv/bin/activate && pip install -r requirements.txt  # встановлення залежностей
+                    . venv/bin/activate && venv/bin/pip install -r requirements.txt  # встановлення залежностей
                 '''
             }
         }
@@ -37,7 +37,7 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                    . venv/bin/activate && pytest  # запуск тестів
+                    . venv/bin/activate && venv/bin/pytest  # запуск тестів
                 '''
             }
         }
