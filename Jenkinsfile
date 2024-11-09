@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     stages {
         stage('Checkout') {
             steps {
@@ -9,35 +8,26 @@ pipeline {
         }
         stage('Setup Virtual Environment') {
             steps {
-                sh 'python3 -m venv venv'
-                sh '. venv/bin/activate'
-                sh 'pip install --upgrade pip'
+                sh 'python3 -m venv venv'          // створення віртуального середовища
+                sh '. venv/bin/activate'           // активація віртуального середовища
             }
         }
         stage('Install Dependencies') {
             steps {
-                sh '. venv/bin/activate'
-                sh 'pip install -r requirements.txt'
+                // Виконуємо встановлення pip і залежностей у віртуальному середовищі
+                sh '. venv/bin/activate && pip install --upgrade pip'
+                sh '. venv/bin/activate && pip install -r requirements.txt'
             }
         }
         stage('Run Tests') {
             steps {
-                sh '''
-                . venv/bin/activate
-                export PYTHONPATH=$(pwd)
-                pytest --disable-warnings
-                '''
+                sh '. venv/bin/activate && pytest tests/'  // Запуск тестів
             }
         }
     }
     post {
         always {
-            archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
-        }
-        success {
-            echo 'All tests passed!'
-        }
-        failure {
+            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
             echo 'Some tests failed.'
         }
     }
