@@ -1,4 +1,3 @@
-// Jenkinsfile
 pipeline {
     agent any
 
@@ -9,15 +8,30 @@ pipeline {
             }
         }
 
+        stage('Setup Virtual Environment') {
+            steps {
+                sh '''
+                    python3 -m venv venv  # створення віртуального середовища
+                    . venv/bin/activate && pip install --upgrade pip  # активація та оновлення pip
+                '''
+            }
+        }
+
         stage('Install Dependencies') {
             steps {
-                sh 'pip install -r requirements.txt'
+                sh '''
+                    . venv/bin/activate
+                    pip install -r requirements.txt  # установка залежностей
+                '''
             }
         }
 
         stage('Run Tests') {
             steps {
-                sh 'pytest --disable-warnings'
+                sh '''
+                    . venv/bin/activate
+                    pytest  # запуск тестів
+                '''
             }
         }
     }
@@ -25,6 +39,7 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
+            echo 'Some tests failed.'
         }
         success {
             echo 'All tests passed!'
