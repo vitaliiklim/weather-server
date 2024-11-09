@@ -20,7 +20,8 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 sh '''
-                    . venv/bin/activate && pip install -r requirements.txt  # активація та установка залежностей
+                    . venv/bin/activate
+                    pip install -r requirements.txt  # установка залежностей
                 '''
             }
         }
@@ -28,55 +29,9 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                    . venv/bin/activate && pytest  # активація та запуск тестів
-                '''
-            }
-        }
-    }
-
-    post {
-        always {
-            archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
-            echo 'Some tests failed.'
-        }
-        success {
-            echo 'All tests passed!'
-        }
-        failure {
-            echo 'Some tests failed.'
-        }
-    }
-}1~pipeline {
-    agent any
-
-    stages {
-        stage('Checkout') {
-            steps {
-                git 'git@github.com:vitaliiklim/weather-server.git'
-            }
-        }
-
-        stage('Setup Virtual Environment') {
-            steps {
-                sh '''
-                    python3 -m venv venv  # створення віртуального середовища
-                    . venv/bin/activate && pip install --upgrade pip  # активація та оновлення pip
-                '''
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                sh '''
-                    . venv/bin/activate && pip install -r requirements.txt  # активація та установка залежностей
-                '''
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                sh '''
-                    . venv/bin/activate && pytest  # активація та запуск тестів
+                    . venv/bin/activate
+                    export PYTHONPATH=$(pwd)  # Додаємо кореневу директорію до PYTHONPATH
+                    pytest  # запуск тестів
                 '''
             }
         }
