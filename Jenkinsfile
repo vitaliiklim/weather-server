@@ -4,43 +4,32 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'git@github.com:vitaliiklim/weather-server.git'
+                git 'https://github.com/your-username/weather-server.git'
             }
         }
-
         stage('Setup Virtual Environment') {
             steps {
-                sh '''
-                    python3 -m venv venv  # створення віртуального середовища
-                    . venv/bin/activate && pip install --upgrade pip  # активація та оновлення pip
-                '''
+                sh 'python3 -m venv venv'
+                sh '. venv/bin/activate'
+                sh 'pip install --upgrade pip'
             }
         }
-
         stage('Install Dependencies') {
             steps {
-                sh '''
-                    . venv/bin/activate
-                    pip install -r requirements.txt  # установка залежностей
-                '''
+                sh '. venv/bin/activate'
+                sh 'pip install -r requirements.txt'
             }
         }
-
         stage('Run Tests') {
             steps {
-                sh '''
-                    . venv/bin/activate
-                    export PYTHONPATH=$(pwd)  # Додаємо кореневу директорію до PYTHONPATH
-                    pytest  # запуск тестів
-                '''
+                sh '. venv/bin/activate'
+                sh 'PYTHONPATH=. pytest --disable-warnings'
             }
         }
     }
-
     post {
         always {
             archiveArtifacts artifacts: '**/test-results/*.xml', allowEmptyArchive: true
-            echo 'Some tests failed.'
         }
         success {
             echo 'All tests passed!'
