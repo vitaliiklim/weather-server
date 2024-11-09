@@ -1,5 +1,5 @@
 import pytest
-from ..app import app  # Залиште так, якщо запускаєте з кореневої директорії
+from app import app  # Залиште так, якщо запускаєте з кореневої директорії
 
 @pytest.fixture
 def client():
